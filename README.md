@@ -44,3 +44,36 @@
    - Paste the private key
 
 ## Connect GitHub repository to Jenkins
+- Open GitBash as an admin
+- cd .ssh
+- Enter ssh-keygen -t rsa -b 4096 -C "your GitHub Email"
+   - The following prompt "Enter a file in which to save the key (/Users/you/.ssh/id_rsa):" Enter file name
+   - No passphrase - hit enter
+- Go to Settings in your GitHub repository.
+- Go to Deploy Keys.
+- Add a key, and copy the contents from the clip command into the box.
+- On Jenkins, create a build.
+- Remember naming conventions.
+- Tick Discard old builds. Max # of builds to keep = 3.
+- GitHub project - use the http link NOT ssh.
+- Tick restrict where this project can be run.
+- For Label Expression, type in sparta-ubuntu-node (might need to press backspace and fiddle around with it until it recognises the label).
+- For Source Code Management, choose Git.
+For Repository URL, choose the repository's SSH link.
+Run this command on the private key generated: clip < ~/.ssh/eng110_cicd_sam.
+Credientials: add a new key.
+Choose SSH Keys. Give it the same name as your private key (for example eng110_cicd_sam).
+Paste the private key's contents into the box.
+Make sure it is */main and not */master
+Tick Provide Node & npm bin/ folder to PATH
+Go to build - execute shell
+Type in these commands - make sure the path to your app folder is right:
+cd app
+npm instal
+npm test
+
+
+
+    username: devopslondon
+
+    DevOpsAdmin
