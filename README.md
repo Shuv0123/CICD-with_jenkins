@@ -36,12 +36,6 @@
 - Scroll down to settings 
 - On the left CLick on SSH and GPG keys
 - Press on new SSH key paste the content of your eng110_shuvo.pub file
-## Add key to private key to repository
-- From Github make your way to the repository that you want to deploy a key with
-- Click on 'Settings'
-   - 'Deploy key'
-   - 'Add key'
-   - Paste the private key
 
 ## Connect GitHub repository to Jenkins
 - Open GitBash as an admin
@@ -49,11 +43,12 @@
 - Enter ssh-keygen -t rsa -b 4096 -C "your GitHub Email"
    - The following prompt "Enter a file in which to save the key (/Users/you/.ssh/id_rsa):" Enter file name
    - No passphrase - hit enter
-- Go to Settings in your GitHub repository.
-- Go to Deploy Keys.
-- Add a key, and copy the contents from the clip command into the box.
+- Go to github repository
+- Click on 'Settings'
+   - 'Deploy key'
+   - 'Add key'
+   - Paste the private key
 - On Jenkins, create a build.
-- Remember naming conventions.
 - Tick Discard old builds. Max # of builds to keep = 3.
 - GitHub project - use the http link NOT ssh.
 - Tick restrict where this project can be run.
