@@ -157,7 +157,7 @@ sudo apt-get install nginx -y
 sudo systemctl restart nginx
 sudo systemctl enable nginx
 scp -
-cd folder/env/app/
+cd app/app/
 sudo chmod +x provision.sh
 sudo /.provision.sh
 cd app
