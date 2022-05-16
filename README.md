@@ -54,26 +54,121 @@
 - Tick restrict where this project can be run.
 - For Label Expression, type in sparta-ubuntu-node (might need to press backspace and fiddle around with it until it recognises the label).
 - For Source Code Management, choose Git.
-For Repository URL, choose the repository's SSH link.
-Run this command on the private key generated: clip < ~/.ssh/eng110_cicd_sam.
-Credientials: add a new key.
-Choose SSH Keys. Give it the same name as your private key (for example eng110_cicd_sam).
-Paste the private key's contents into the box.
-Make sure it is */main and not */master
-Tick Provide Node & npm bin/ folder to PATH
-Go to build - execute shell
-Type in these commands - make sure the path to your app folder is right:
+- For Repository URL, choose the repository's SSH link.
+- Run this command on the private key generated: clip < ~/.ssh/eng110_cicd_sam.
+- Credientials: add a new key.
+- Choose SSH Keys. Give it the same name as your private key (for example eng110_cicd_sam).
+- Paste the private key's contents into the box.
+- Make sure it is */main and not */master
+- Tick Provide Node & npm bin/ folder to PATH
+- Go to build - execute shell
+- Type in these commands - make sure the path to your app folder is right:
+   - cd app
+   - npm instal
+   - npm test
+
+## Webhook set-up  between GitHub and Jenkins
+- On Jenkins select `Configure` for your build
+- Under `Build Triggers`, select `GitHub hook trigger for GITScm polling`
+- On Github, in your repository select `settings`
+- Select `Webhook` from the menu on the left side
+- Select `Add new`
+- Enter the payload URL eg. `http://ipaddress:port/github-webhook/`
+- Select `application/json` from the drop down menu
+- Check `Send me everything`
+- Test webhook by pushing a commit to your GitHub repository. This should automatically trigger the Jenkins job to run
+
+# CI Task
+
+![](images/continuous_integration.png)
+
+## Job 1
+
+- Click on `Create new build`
+- Name the build
+- Check `Discard old builds` and choose `3` as the `Max # of builds to keep`
+- Check `GitHub project` and paste your repository's URL HTTPS format
+- Check `Restrict where this project can be run` (sparta-ubuntu-node)
+- Check `Git.` Link your GitHub repository again (SSH format)
+- Choose the right `private key` to unlock the repository's `public key`
+- Choose `*/dev` in branch
+- Select `GithHub hook trigger`
+- Select `Provide Node & npm bin/ folder to PATH.\`
+- Go to Build, and choose `Execute shell`, set up with these commands:
+    - `cd app`
+    - `npm install`
+    - `npm test`
+- For Post-build Actions, choose Job 2 in Build other projects (which will be created next)
+- Click `save`
+
+## Job 2 
+
+- Click on `Create new build`
+- Name the build
+- Select the `GitHub settings` again and `Discard old builds`
+- For branch, choose `*/dev` because we are working in the dev branch
+- Select `Additional Behaviours`
+   - add `origin` for `Name of repository`
+   - add `main` as Branch to merge to
+- select `Post-Build Actions` and name it `Job 3`
+- In `Post-Build-Actions` select `Git Publisher`
+   - tick `Push only if build succeeds and Merge results`
+- Click `save`
+
+## Job 3
+
+- Click on `Create new build`
+- Name the build
+- Check `Discard old builds` and choose `3` as the `Max # of builds to keep`
+- Check `GitHub project` and paste your repository's URL HTTPS format
+- Check `Restrict where this project can be run` (sparta-ubuntu-node)
+- Check `Git.` Link your GitHub repository again (SSH format)
+- Choose the right `private key` to unlock the repository's `public key`
+- Choose `*/main` in branch
+- SSH Agent: choose the private key to unlock the EC2 instance's public key.
+
+
+
+Now we need to by pass the key asking stage with below command:
+ssh -A -o "StrictHostKeyChecking=no" ubuntu@ec2-ip << EOF	
+- copy the the code
+- run your provision.sh to install node with required dependencies for app instance - same goes for db instance (ensure to double check if node and db are actively running)
+- create an env to connect to db
+- navigate to app folder
+- kill any existing pm2 process just in case
+- launch the app
+nohup node app.js > /dev/null 2>&1 & - use this command to run node app in the background
+- To debug ssh into your ec2 and run the above commands
+
+- Run these commands under Execute shell:
+
+```bash
+    
+EOF
+
+# ssh into ec2
+# update upgrade, run the provisioning script or install nginx to test
+# scp to copy data from github to ec2
+ssh -A -o "StrictHostKeyChecking=no" ubuntu@54.246.60.105 << EOF
+#export DB_HOST=mongodb://54.75.96.210:27017/posts
+sudo apt-get update -y
+sudo apt-get upgrade -y
+sudo apt-get install nginx -y
+sudo systemctl restart nginx
+sudo systemctl enable nginx
+scp -
+cd folder/env/app/
+sudo chmod +x provision.sh
+sudo /.provision.sh
 cd app
-npm instal
-npm test
+npm install
+npm start
+```
+- SPin an EC2 instance and use these security group:
 
+![](images/security_group.png)
 
+username: devopslondon
 
-    username: devopslondon
-
-    DevOpsAdmin
-
-
-
-test
+DevOpsAdmin
 
