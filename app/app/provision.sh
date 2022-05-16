@@ -20,9 +20,9 @@ curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 sudo apt install -y nodejs
 
 #npm
-cd  /app/app
+#cd  /app/app
 
-npm install
+#npm install
 
-npm  start &
+#npm  start &
 
