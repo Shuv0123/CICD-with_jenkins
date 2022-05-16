@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #install linux
-#sudo apt update -y
+sudo apt update -y
 
-#sudo apt upgrade -y
+sudo apt upgrade -y
 
 #install and enable nginx
 #sudo apt install nginx -y
@@ -20,9 +20,9 @@ curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 sudo apt install -y nodejs
 
 #npm
-#cd  app
+cd  /app/app
 
-#npm install
+npm install
 
-#npm  start &
+npm  start &
 
