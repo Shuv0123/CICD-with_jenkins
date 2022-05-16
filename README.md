@@ -171,4 +171,6 @@ npm start
 username: devopslondon
 
 DevOpsAdmin
-test3
+test4
+
+scp -i ~/.ssh/eng119.pem -r ~/starter_code ubuntu@ec2-52-50-217-189.eu-west-1.compute.amazonaws.com:/home/ubuntu
