@@ -168,9 +168,22 @@ npm start
 
 ![](images/security_group.png)
 
+
+```bash
+rsync -avz -e "ssh -o StrictHostKeyChecking=no" app ubuntu@ec2-52-50-217-189.eu-west-1.compute.amazonaws.com:~/.
+ssh -A -o "StrictHostKeyChecking=no" ubuntu@52.50.217.189 << EOF
+     
+     sudo apt-get update -y
+     sudo apt-get upgrade -y
+     sudo apt-get install nginx -y
+     sudo systemctl restart nginx
+     sudo systemctl enable nginx
+EOF
+```
+
+
 username: devopslondon
 
 DevOpsAdmin
-test4
+test6
 
-scp -i ~/.ssh/eng119.pem -r ~/starter_code ubuntu@ec2-52-50-217-189.eu-west-1.compute.amazonaws.com:/home/ubuntu
