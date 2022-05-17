@@ -185,7 +185,8 @@ EOF
 username: devopslondon
 
 DevOpsAdmin
-tes
+82.14.111.210/32
+172.31.16.0/20 27017 subnet cider
 
 
 
