@@ -21,6 +21,16 @@
 
 - In continuous delivery the deployment is done manually and in continuous deployment it happens automatically.
 
+## Webhook?
+
+
+## private vs public keys
+ssh -secure shell
+# master vs agent
+one master multiple agent
+agent test code 
+master schedule job
+
 ## What is Jenkins? 
 
 - Jenkins is an open source automation server. It helps automate the parts of software development related to building, testing, and deploying, facilitating continuous integration and continuous delivery.
@@ -181,12 +191,114 @@ ssh -A -o "StrictHostKeyChecking=no" ubuntu@52.50.217.189 << EOF
 EOF
 ```
 
+```bash
+ssh -A -o "StrictHostKeyChecking=no" ubuntu@52.208.45.1 << EOF
+       sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv D68FA50FEA312927
+       echo "deb https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
+       sudo apt update -y
+       sudo apt upgrade -y
+       #sudo apt install mongodb-org -y
+       sudo apt-get install -y mongodb-org=3.2.20 mongodb-org-server=3.2.20 mongodb-org-shell=3.2.20 mongodb-org-mongos=3.2.20 mongodb-org-tools=3.2.20
+       sudo systemctl start mongod
+       sudo systemctl enable mongod
+       #sudo rm /etc/mongod.conf
+       #sudo cp /home/ubuntu/app/extra/mongod.config /etc/mongod.conf
+       sudo chown ubuntu: /etc/.
+       sed '24d' /etc/mongod.conf -i
+       awk 'NR==24{print "  bindIp: 0.0.0.0"}7' /etc/mongod.conf > change && mv change /etc/mongod.conf
+       sudo chown root: /etc/.
+       sudo systemctl restart mongod
+       sudo systemctl enable mongod
+EOF
 
+
+rsync -avz -e "ssh -o StrictHostKeyChecking=no" app ec2-54-170-166-130.eu-west-1.compute.amazonaws.com:~/.
+ssh -A -o "StrictHostKeyChecking=no" ubuntu@54.170.166.130 << EOF
+         sudo apt-get update -y
+         sudo apt-get upgrade -y
+         sudo apt-get install nginx -y
+         sudo systemctl restart nginx 
+         sudo systemctl enable nginx
+         #sudo rm /etc/nginx/sites-available/default
+         #sudo cp /home/ubuntu/app/extra/nginx.default /etc/nginx/sites-available/default
+         #sudo systemctl reload nginx
+         #sudo systemctl restart nginx
+         #sudo systemctl enable nginx
+         cd app
+         sudo apt install software-properties-common -y
+         curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+         sudo apt update -y
+         sudo apt upgrade -y
+         sudo apt install -y nodejs
+         sudo apt update -y
+         sudo apt upgrade -y
+         export DB_HOST=mongodb://52.208.45.1:27017/posts
+         #sudo echo "export DB_HOST=mongodb://34.248.61.128:27017/posts" >> ~/.profile
+         #source ~/.bashrc
+         #source ~/.profile
+         sudo node seeds/seed.js
+         npm install
+         nohup node app.js > /tmp/logs 2>&1 &
+EOF
+```
 username: devopslondon
 
 DevOpsAdmin
 82.14.111.210/32
 172.31.16.0/20 27017 subnet cider
+
+## Jenkins server set-up
+Jenkin server with 1 master and 1 agent node:
+
+- Given that private and public key exist already (eng119) otherwise create key pairs.
+- resources used: 
+   -  https://www.hostinger.co.uk/tutorials/how-to-install-jenkins-on-ubuntu/
+
+### Create EC2 instance to host Jenkins
+- create an EC2 instance on aws
+
+- allow port 22, 80, and 8080 from anywhere IPv4
+
+- SSH into the controller
+
+- update & upgrade
+- install java v11 `sudo apt-get install fontconfig openjdk-11-jre`
+- `wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -`
+- `sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'`
+- `sudo apt-get update`
+- `sudo apt-get install jenkins`
+- copy admin password to set up jenkins `cat /var/lib/jenkins/secrets/initialAdminPassword`
+- connect to http://<your_server_public_DNS>:8080
+- paste admin password to set up jenkins
+![](images/jenkins_unlock.png)
+
+- isntall the plug ins you want
+
+### setup agent node
+- create an EC2 instance that is going to host the agent node 
+- allow port 22, 80, and 8080 from anywhere IPv4
+
+- SSH into the controller
+
+- update & upgrade
+- install java v11 `sudo apt-get install fontconfig openjdk-11-jre`
+- Go back to the jenkin server `http://<your_server_public_DNS>:8080` 
+- `add New Node`
+- remote root directory: `/home/ubuntu`
+- Host: <agent instance IP>
+
+- choose key
+
+- add new key
+- Kind: `SSH Username with private key`
+- Username: `ubuntu`
+- Private Key: <enter directly>
+- Host Key Verification Strategy: `Non verifying Verification Strategy`
+
+- When running jobs, specify to run on agent nodes
+
+
+
 
 
 
