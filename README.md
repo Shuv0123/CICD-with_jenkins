@@ -55,9 +55,9 @@
 - For Label Expression, type in sparta-ubuntu-node (might need to press backspace and fiddle around with it until it recognises the label).
 - For Source Code Management, choose Git.
 - For Repository URL, choose the repository's SSH link.
-- Run this command on the private key generated: clip < ~/.ssh/eng110_cicd_sam.
+- Run this command on the private key generated: clip < ~/.ssh/eng110_cicd_shuvo.
 - Credientials: add a new key.
-- Choose SSH Keys. Give it the same name as your private key (for example eng110_cicd_sam).
+- Choose SSH Keys. Give it the same name as your private key (for example eng110_cicd_shuvo).
 - Paste the private key's contents into the box.
 - Make sure it is */main and not */master
 - Tick Provide Node & npm bin/ folder to PATH
@@ -182,11 +182,7 @@ EOF
 ```
 
 
-username: devopslondon
 
-DevOpsAdmin
-82.14.111.210/32
-172.31.16.0/20 27017 subnet cider
 
 
 
