@@ -31,8 +31,6 @@
 ## Webhook?
 
 
-## private vs public keys
-ssh -secure shell
 # master vs agent
 one master multiple agent
 agent test code 
@@ -45,7 +43,7 @@ master schedule job
 
 ### Secure connection between GitHub and Localhost
 - First step in a jenkins pipeline is to make it end to end secure
-- Create a ssh connection from our localhost to GitHub 
+- Create a ssh connection from our localhost to GitHub (ssh -secure shell)
 - Generate new ssh key pair on our localhost
 - Deploy the public key to GitHub account 
 - Test the ssh connection
@@ -94,11 +92,11 @@ master schedule job
 - Go to build - execute shell
 - Type in these commands - make sure the path to your app folder is right:
    - cd app
-   - npm instal
+   - npm install
    - npm test
 
 ## Webhook set-up between GitHub and Jenkins
-A webhook 
+A webhook is kinda like an API but instead of being triggered by request, it's triggered by events events/actions. APIs are used so that two apps can communicate with each other. Whereas, Webhooks are used to transfer data between two programs as soon as aparticular event takes place.
 - On Jenkins select `Configure` for your build
 - Under `Build Triggers`, select `GitHub hook trigger for GITScm polling`
 - On Github, in your repository select `settings`
@@ -161,7 +159,7 @@ A webhook
 
 
 Now we need to by pass the key asking stage with below command:
-ssh -A -o "StrictHostKeyChecking=no" ubuntu@ec2-ip << EOF	
+`ssh -A -o "StrictHostKeyChecking=no" ubuntu@ec2-ip << EOF`
 - copy the the code
 - run your provision.sh to install node with required dependencies for app instance - same goes for db instance (ensure to double check if node and db are actively running)
 - create an env to connect to db
@@ -262,7 +260,7 @@ ssh -A -o "StrictHostKeyChecking=no" ubuntu@54.170.166.130 << EOF
          nohup node app.js > /tmp/logs 2>&1 &
 EOF
 ```
-
+with the command `rsync -avz -e "ssh -o StrictHostKeyChecking=no" app ec2-54-170-166-130.eu-west-1.compute.amazonaws.com:~/.` we do not need to specify the pem file because jenkins has already access. The rsync command takes the app folder from the GitHub repository and transfers it to the ec2 instance.
 
 ## Why do we need agent node, can't we run the test on the master node?
 - This is because of the risk attached to it, if master node breaks due to the increase in load this would break the CICD pipeline. The master nodes has the coades to deploy things on the cloud. If the agent node breaks we still have the master node to facilitate the service. When a test pass, the agent node would notify the master node and it would accept the changes to then deliver them on aws. However, if the test fail, no acction will be taken by the master node and the feedback goes back to whiever wrote the test. everytime something does not work the feedback is sent back.
