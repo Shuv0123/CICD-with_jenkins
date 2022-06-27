@@ -1,14 +1,21 @@
 # CICD-with_jenkins
+
+![](images/CICD.png)
+
 ## What is Continuous integration (CI) Continuous Delivery (CD) and Continuous Deployment (CDE)?
 
 - CI/CD is a method used to frequently deliver apps to customers by introducing automation into the stages of app development. It is considered the backbone of DevOps practices and automation.
 
 ## Continuous integration (CI)
-- Continuous integration (CI) is practice that involves developers making small changes and checks to their code. Developers merge code to main branch multiple times a day and there is an automated build and test process which gives instant feedback.
+
+- In Continuous integration (CI) developers commits and is practice that involves developers making small changes and checks to their code. Developers merge code to main branch multiple times a day and there is an automated build and test process which gives instant feedback.
     - faster software builds
     - customer satisfaction by deploying on time
     - small code changes make fault isolation simpler and quicker
     - improve software build
+- Before when developers used to create apps, they would work long extensive periods, before they committed their codes. However this practice caused a lot of problem when it came to merging, which is called a merge hell. To avoid this now developers have adopted the CI method.
+
+![](images/CI_jenkins.png)
 
 ## Continuous Delivery (CD)
 - Continuous delivery (CD) is an extension of continuous integration. It makes sure you can release new changes to your customers quickly as it automates the release process so you can deploy the application at any time by just clicking a button. In continuous Delivery the deployment is completed manually.
@@ -34,6 +41,19 @@ master schedule job
 ## What is Jenkins? 
 
 - Jenkins is an open source automation server. It helps automate the parts of software development related to building, testing, and deploying, facilitating continuous integration and continuous delivery.
+
+
+### Secure connection between GitHub and Localhost
+- First step in a jenkins pipeline is to make it end to end secure
+- Create a ssh connection from our localhost to GitHub 
+- Generate new ssh key pair on our localhost
+- Deploy the public key to GitHub account 
+- Test the ssh connection
+
+### Secure connection between jenkins and github
+- Generate new ssh key pair on our localhost
+- Deploy the public key to GitHub repo (repo -> settings -> deploy keys -> add the public key)
+- Deploy the private key to jenkins
 
 ## .pub and private keys (SSH keys) SET-UP
 - Open GitBash as an admin
@@ -77,7 +97,8 @@ master schedule job
    - npm instal
    - npm test
 
-## Webhook set-up  between GitHub and Jenkins
+## Webhook set-up between GitHub and Jenkins
+A webhook 
 - On Jenkins select `Configure` for your build
 - Under `Build Triggers`, select `GitHub hook trigger for GITScm polling`
 - On Github, in your repository select `settings`
@@ -241,6 +262,10 @@ ssh -A -o "StrictHostKeyChecking=no" ubuntu@54.170.166.130 << EOF
          nohup node app.js > /tmp/logs 2>&1 &
 EOF
 ```
+
+
+## Why do we need agent node, can't we run the test on the master node?
+- This is because of the risk attached to it, if master node breaks due to the increase in load this would break the CICD pipeline. The master nodes has the coades to deploy things on the cloud. If the agent node breaks we still have the master node to facilitate the service. When a test pass, the agent node would notify the master node and it would accept the changes to then deliver them on aws. However, if the test fail, no acction will be taken by the master node and the feedback goes back to whiever wrote the test. everytime something does not work the feedback is sent back.
 
 ## Jenkins server set-up
 Jenkin server with 1 master and 1 agent node:
